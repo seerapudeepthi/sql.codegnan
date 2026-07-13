@@ -1,0 +1,673 @@
+Level 1: Beginner
+
+### 1. List all books that cost less than ₹300:
+===============================================
+
+```sql
+SELECT * FROM Books
+WHERE price < 300;
+```
+
+### 2. Find the email address of the customer named Vihaan Reddy:
+=================================================================
+
+```sql
+SELECT email
+FROM Customers
+WHERE name = 'Vihaan Reddy';
+```
+
+### 3. Display the titles of all books that belong to the Fiction genre:
+=======================================================================
+
+```sql
+SELECT b.title
+FROM Books b
+JOIN Genres g
+ON b.genre_id = g.genre_id
+WHERE g.genre_name = 'Fiction';
+```
+
+### 4. Display the names of all authors in alphabetical order:
+============================================================
+
+```sql
+SELECT author_name
+FROM Authors
+ORDER BY author_name;
+```
+
+### 5. Count how many customers belong to the city Mumbai:
+============================================================
+
+```sql
+SELECT COUNT(*) AS Total_Customers
+FROM Customers
+WHERE city = 'Mumbai';
+```
+
+### 6. Display the details of the most expensive book available in the bookstore:
+=============================================================================
+
+```sql
+SELECT *
+FROM Books
+WHERE price = (SELECT MAX(price) FROM Books);
+```
+
+### 7. Show the title, price, and stock quantity of all books:
+=============================================================
+
+```sql
+SELECT title, price, stock_quantity
+FROM Books;
+```
+
+### 8. Display all customers who registered after 1st January 2023:
+=================================================================
+
+```sql
+SELECT *
+FROM Customers
+WHERE join_date > '2023-01-01';
+```
+
+### 9. Find all books whose stock quantity is greater than 20:
+=================================================================
+
+```sql
+SELECT *
+FROM Books
+WHERE stock_quantity > 20;
+```
+
+### 10. Display all genres available in the bookstore:
+======================================================
+
+```sql
+SELECT *
+FROM Genres;
+```
+
+### 11. Find all books written by R.K. Narayan:
+===============================================
+
+```sql
+SELECT b.title
+FROM Books b
+JOIN Authors a
+ON b.author_id = a.author_id
+WHERE a.author_name = 'R.K. Narayan';
+```
+
+### 12. Display all orders placed by Aarav Sharma:
+=====================================================
+
+```sql
+SELECT o.*
+FROM Orders o
+JOIN Customers c
+ON o.customer_id = c.customer_id
+WHERE c.name = 'Aarav Sharma';
+```
+
+### 13. Find the cheapest book in the bookstore:
+================================================
+
+```sql
+SELECT *
+FROM Books
+WHERE price = (SELECT MIN(price) FROM Books);
+```
+
+### 14. Display the names of customers whose email ends with gmail.com:
+=======================================================================
+
+```sql
+SELECT name
+FROM Customers
+WHERE email LIKE '%gmail.com';
+```
+
+### 15. Count the total number of books available in the bookstore:
+===================================================================
+
+```sql
+SELECT COUNT(*) AS Total_Books
+FROM Books;
+```
+
+---
+
+# Level 2: Intermediate
+
+### **1. Display the title of every book along with its corresponding author's name.**
+
+```sql
+SELECT b.title, a.author_name
+FROM Books b
+JOIN Authors a
+ON b.author_id = a.author_id;
+```
+
+---
+
+### **2. Calculate the total amount spent by the customer Aarav Sharma.**
+
+```sql
+SELECT c.name,
+SUM(od.quantity_ordered * od.price_at_time_of_order) AS Total_Spent
+FROM Customers c
+JOIN Orders o
+ON c.customer_id = o.customer_id
+JOIN Order_Details od
+ON o.order_id = od.order_id
+WHERE c.name = 'Aarav Sharma'
+GROUP BY c.name;
+```
+
+---
+
+### **3. Find the genre that has the highest total stock quantity.**
+
+```sql
+SELECT g.genre_name,
+SUM(b.stock_quantity) AS Total_Stock
+FROM Genres g
+JOIN Books b
+ON g.genre_id = b.genre_id
+GROUP BY g.genre_name
+ORDER BY Total_Stock DESC
+LIMIT 1;
+```
+
+---
+
+### **4. Display all orders placed during the month of May 2023.**
+
+```sql
+SELECT *
+FROM Orders
+WHERE MONTH(order_date) = 5
+AND YEAR(order_date) = 2023;
+```
+
+---
+
+### **5. Find the books that have never been ordered by any customer.**
+
+```sql
+SELECT title
+FROM Books
+WHERE book_id NOT IN
+(
+SELECT DISTINCT book_id
+FROM Order_Details
+);
+```
+
+---
+
+### **6. Calculate the total number of books sold by each author.**
+
+```sql
+SELECT a.author_name,
+SUM(od.quantity_ordered) AS Books_Sold
+FROM Authors a
+JOIN Books b
+ON a.author_id = b.author_id
+JOIN Order_Details od
+ON b.book_id = od.book_id
+GROUP BY a.author_name;
+```
+
+---
+
+### **7. Display each customer's name along with the total number of orders they have placed.**
+
+```sql
+SELECT c.name,
+COUNT(o.order_id) AS Total_Orders
+FROM Customers c
+LEFT JOIN Orders o
+ON c.customer_id = o.customer_id
+GROUP BY c.name;
+```
+
+---
+
+### **8. Find the average price of books available in each genre.**
+
+```sql
+SELECT g.genre_name,
+AVG(b.price) AS Average_Price
+FROM Genres g
+JOIN Books b
+ON g.genre_id = b.genre_id
+GROUP BY g.genre_name;
+```
+
+---
+
+### **9. Display all books along with their genre names.**
+
+```sql
+SELECT b.title,
+g.genre_name
+FROM Books b
+JOIN Genres g
+ON b.genre_id = g.genre_id;
+```
+
+---
+
+### **10. Find customers who have placed more than three orders.**
+
+```sql
+SELECT c.name,
+COUNT(o.order_id) AS Total_Orders
+FROM Customers c
+JOIN Orders o
+ON c.customer_id = o.customer_id
+GROUP BY c.name
+HAVING COUNT(o.order_id) > 3;
+```
+
+---
+
+### **11. Display the total quantity of books sold for each book title.**
+
+```sql
+SELECT b.title,
+SUM(od.quantity_ordered) AS Quantity_Sold
+FROM Books b
+JOIN Order_Details od
+ON b.book_id = od.book_id
+GROUP BY b.title;
+```
+
+---
+
+### **12. Find the total revenue generated by each book.**
+
+```sql
+SELECT b.title,
+SUM(od.quantity_ordered * od.price_at_time_of_order) AS Revenue
+FROM Books b
+JOIN Order_Details od
+ON b.book_id = od.book_id
+GROUP BY b.title;
+```
+
+---
+
+### **13. Display all orders along with customer names and order dates.**
+
+```sql
+SELECT o.order_id,
+c.name AS Customer_Name,
+o.order_date
+FROM Orders o
+JOIN Customers c
+ON o.customer_id = c.customer_id;
+```
+
+---
+
+### **14. Find authors who have written more than two books.**
+
+```sql
+SELECT a.author_name,
+COUNT(b.book_id) AS Total_Books
+FROM Authors a
+JOIN Books b
+ON a.author_id = b.author_id
+GROUP BY a.author_name
+HAVING COUNT(b.book_id) > 2;
+```
+
+---
+
+### **15. Display genres that contain more than five books.**
+
+```sql
+SELECT g.genre_name,
+COUNT(b.book_id) AS Total_Books
+FROM Genres g
+JOIN Books b
+ON g.genre_id = b.genre_id
+GROUP BY g.genre_name
+HAVING COUNT(b.book_id) > 5;
+```
+---
+
+# Level 3: Advanced
+
+## **Level 3: Advanced Questions with SQL Answers**
+
+### **1. Find the customer who has placed the highest number of orders.**
+
+```sql
+SELECT c.name,
+COUNT(o.order_id) AS Total_Orders
+FROM Customers c
+JOIN Orders o
+ON c.customer_id = o.customer_id
+GROUP BY c.name
+ORDER BY Total_Orders DESC
+LIMIT 1;
+```
+
+---
+
+### **2. Display authors whose average book price is greater than ₹300.**
+
+```sql
+SELECT a.author_name,
+AVG(b.price) AS Average_Price
+FROM Authors a
+JOIN Books b
+ON a.author_id = b.author_id
+GROUP BY a.author_name
+HAVING AVG(b.price) > 300;
+```
+
+---
+
+### **3. Find the best-selling book based on the highest quantity sold.**
+
+```sql
+SELECT b.title,
+SUM(od.quantity_ordered) AS Total_Sold
+FROM Books b
+JOIN Order_Details od
+ON b.book_id = od.book_id
+GROUP BY b.title
+ORDER BY Total_Sold DESC
+LIMIT 1;
+```
+
+---
+
+### **4. Display customers who purchased both "Malgudi Days" and "Five Point Someone".**
+
+```sql
+SELECT c.name
+FROM Customers c
+JOIN Orders o
+ON c.customer_id = o.customer_id
+JOIN Order_Details od
+ON o.order_id = od.order_id
+JOIN Books b
+ON od.book_id = b.book_id
+WHERE b.title IN ('Malgudi Days', 'Five Point Someone')
+GROUP BY c.name
+HAVING COUNT(DISTINCT b.title) = 2;
+```
+
+---
+
+### **5. Find customers who have not placed any orders during the last six months.**
+
+```sql
+SELECT *
+FROM Customers
+WHERE customer_id NOT IN
+(
+SELECT customer_id
+FROM Orders
+WHERE order_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+);
+```
+
+---
+
+### **6. Calculate the total revenue generated from books belonging to the Fiction genre.**
+
+```sql
+SELECT g.genre_name,
+SUM(od.quantity_ordered * od.price_at_time_of_order) AS Revenue
+FROM Genres g
+JOIN Books b
+ON g.genre_id = b.genre_id
+JOIN Order_Details od
+ON b.book_id = od.book_id
+WHERE g.genre_name = 'Fiction'
+GROUP BY g.genre_name;
+```
+
+---
+
+### **7. Find the top five customers based on the total amount spent.**
+
+```sql
+SELECT c.name,
+SUM(od.quantity_ordered * od.price_at_time_of_order) AS Total_Spent
+FROM Customers c
+JOIN Orders o
+ON c.customer_id = o.customer_id
+JOIN Order_Details od
+ON o.order_id = od.order_id
+GROUP BY c.name
+ORDER BY Total_Spent DESC
+LIMIT 5;
+```
+
+---
+
+### **8. Display the book that generated the highest revenue.**
+
+```sql
+SELECT b.title,
+SUM(od.quantity_ordered * od.price_at_time_of_order) AS Revenue
+FROM Books b
+JOIN Order_Details od
+ON b.book_id = od.book_id
+GROUP BY b.title
+ORDER BY Revenue DESC
+LIMIT 1;
+```
+
+---
+
+### **9. Find the author whose books have generated the maximum sales revenue.**
+
+```sql
+SELECT a.author_name,
+SUM(od.quantity_ordered * od.price_at_time_of_order) AS Revenue
+FROM Authors a
+JOIN Books b
+ON a.author_id = b.author_id
+JOIN Order_Details od
+ON b.book_id = od.book_id
+GROUP BY a.author_name
+ORDER BY Revenue DESC
+LIMIT 1;
+```
+
+---
+
+### **10. Display customers who have purchased books from every available genre.**
+
+```sql
+SELECT c.name
+FROM Customers c
+JOIN Orders o
+ON c.customer_id = o.customer_id
+JOIN Order_Details od
+ON o.order_id = od.order_id
+JOIN Books b
+ON od.book_id = b.book_id
+GROUP BY c.name
+HAVING COUNT(DISTINCT b.genre_id) =
+(
+SELECT COUNT(*)
+FROM Genres
+);
+```
+
+---
+
+### **11. Find books whose price is higher than the average price of all books.**
+
+```sql
+SELECT *
+FROM Books
+WHERE price >
+(
+SELECT AVG(price)
+FROM Books
+);
+```
+
+---
+
+### **12. Display the second most expensive book available in the bookstore.**
+
+```sql
+SELECT *
+FROM Books
+ORDER BY price DESC
+LIMIT 1 OFFSET 1;
+```
+
+---
+
+### **13. Find customers who have ordered more books than the average number of books ordered per customer.**
+
+```sql
+SELECT c.name,
+SUM(od.quantity_ordered) AS Total_Books
+FROM Customers c
+JOIN Orders o
+ON c.customer_id = o.customer_id
+JOIN Order_Details od
+ON o.order_id = od.order_id
+GROUP BY c.name
+HAVING SUM(od.quantity_ordered) >
+(
+SELECT AVG(TotalBooks)
+FROM
+(
+SELECT SUM(quantity_ordered) AS TotalBooks
+FROM Orders o
+JOIN Order_Details od
+ON o.order_id = od.order_id
+GROUP BY customer_id
+) AS AvgBooks
+);
+```
+
+---
+
+### **14. Display the monthly revenue generated by the bookstore.**
+
+```sql
+SELECT MONTH(order_date) AS Month,
+SUM(od.quantity_ordered * od.price_at_time_of_order) AS Revenue
+FROM Orders o
+JOIN Order_Details od
+ON o.order_id = od.order_id
+GROUP BY MONTH(order_date);
+```
+
+---
+
+### **15. Find the month in which the bookstore recorded the highest sales.**
+
+```sql
+SELECT MONTH(order_date) AS Month,
+SUM(od.quantity_ordered * od.price_at_time_of_order) AS Revenue
+FROM Orders o
+JOIN Order_Details od
+ON o.order_id = od.order_id
+GROUP BY MONTH(order_date)
+ORDER BY Revenue DESC
+LIMIT 1;
+```
+
+---
+
+### **16. Display the top three best-selling authors based on total books sold.**
+
+```sql
+SELECT a.author_name,
+SUM(od.quantity_ordered) AS Books_Sold
+FROM Authors a
+JOIN Books b
+ON a.author_id = b.author_id
+JOIN Order_Details od
+ON b.book_id = od.book_id
+GROUP BY a.author_name
+ORDER BY Books_Sold DESC
+LIMIT 3;
+```
+
+---
+
+### **17. Find books that have never been sold but still have stock available.**
+
+```sql
+SELECT title,
+stock_quantity
+FROM Books
+WHERE book_id NOT IN
+(
+SELECT book_id
+FROM Order_Details
+)
+AND stock_quantity > 0;
+```
+
+---
+
+### **18. Display customers who purchased books from more than three different genres.**
+
+```sql
+SELECT c.name,
+COUNT(DISTINCT b.genre_id) AS Genres_Purchased
+FROM Customers c
+JOIN Orders o
+ON c.customer_id = o.customer_id
+JOIN Order_Details od
+ON o.order_id = od.order_id
+JOIN Books b
+ON od.book_id = b.book_id
+GROUP BY c.name
+HAVING COUNT(DISTINCT b.genre_id) > 3;
+```
+
+---
+
+### **19. Find the genre that generated the highest revenue.**
+
+```sql
+SELECT g.genre_name,
+SUM(od.quantity_ordered * od.price_at_time_of_order) AS Revenue
+FROM Genres g
+JOIN Books b
+ON g.genre_id = b.genre_id
+JOIN Order_Details od
+ON b.book_id = od.book_id
+GROUP BY g.genre_name
+ORDER BY Revenue DESC
+LIMIT 1;
+```
+
+---
+
+### **20. Display the author whose books have the highest average sales quantity.**
+
+```sql
+SELECT a.author_name,
+AVG(od.quantity_ordered) AS Average_Sales
+FROM Authors a
+JOIN Books b
+ON a.author_id = b.author_id
+JOIN Order_Details od
+ON b.book_id = od.book_id
+GROUP BY a.author_name
+ORDER BY Average_Sales DESC
+LIMIT 1;
+```
+
