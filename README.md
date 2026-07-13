@@ -102,9 +102,11 @@ Banking-System-Fraud-Detection/
 ```
 
 ---
+## Team Members
 
-## Author
-
-**Dinesh Seerapu**
-
-B.Tech – Computer Science and Engineering
+| Team Member | Contribution |
+|-------------|--------------|
+| **Deepthi Seerapu** | Designed the database schema, created SQL tables, implemented relationships, and developed SQL queries for banking operations. |
+| **Reshma** | Developed transaction management queries, inserted sample data, and performed data validation and testing. |
+| **Sai** | Implemented fraud detection queries, analyzed suspicious transactions, and optimized SQL queries for better performance. |
+| **Bhavana** | Designed the ER diagram, prepared project documentation, verified database integrity, and assisted in query testing. |
