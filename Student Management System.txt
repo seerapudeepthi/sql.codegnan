@@ -1,0 +1,131 @@
+Here are the SQL answers for the **Student Management System** practice questions.
+
+---
+
+# **Level 1: Simple (Basic Selection & Filtering)**
+
+### **1. Retrieve all students: List the first name and last name of every student.**
+
+```sql
+SELECT first_name, last_name
+FROM Students;
+```
+
+---
+
+### **2. Filter by Score: Find all entries in the Marks table where the score is greater than 80.**
+
+```sql
+SELECT *
+FROM Marks
+WHERE score > 80;
+```
+
+---
+
+### **3. Sort Data: List all exams sorted by their date, starting with the most recent.**
+
+```sql
+SELECT *
+FROM Exams
+ORDER BY exam_date DESC;
+```
+
+---
+
+# **Level 2: Intermediate (Joins & Aggregation)**
+
+### **4. Student Marks: List the First Name, Subject Name, and Score for every mark recorded.**
+
+```sql
+SELECT s.first_name,
+       sub.subject_name,
+       m.score
+FROM Students s
+JOIN Marks m
+ON s.student_id = m.student_id
+JOIN Subjects sub
+ON m.subject_id = sub.subject_id;
+```
+
+---
+
+### **5. Subject Averages: Calculate the average score for each subject. Display the Subject Name and the Average Score.**
+
+```sql
+SELECT sub.subject_name,
+       AVG(m.score) AS Average_Score
+FROM Subjects sub
+JOIN Marks m
+ON sub.subject_id = m.subject_id
+GROUP BY sub.subject_name;
+```
+
+---
+
+### **6. Count Exams: How many marks have been recorded specifically for "Aarav Sharma"?**
+
+```sql
+SELECT s.first_name,
+       s.last_name,
+       COUNT(m.mark_id) AS Total_Marks
+FROM Students s
+JOIN Marks m
+ON s.student_id = m.student_id
+WHERE s.first_name = 'Aarav'
+AND s.last_name = 'Sharma'
+GROUP BY s.first_name, s.last_name;
+```
+
+---
+
+# **Level 3: Complex (Subqueries, Grouping & Logic)**
+
+### **7. Top Performer: Find the student (First Name, Last Name) who has the highest single score in any exam.**
+
+```sql
+SELECT s.first_name,
+       s.last_name,
+       m.score
+FROM Students s
+JOIN Marks m
+ON s.student_id = m.student_id
+WHERE m.score =
+(
+SELECT MAX(score)
+FROM Marks
+);
+```
+
+---
+
+### **8. Scores by Exam: Display the Exam Name and the total sum of scores for that exam, but only for exams where the total sum is greater than 250.**
+
+```sql
+SELECT e.exam_name,
+       SUM(m.score) AS Total_Score
+FROM Exams e
+JOIN Marks m
+ON e.exam_id = m.exam_id
+GROUP BY e.exam_name
+HAVING SUM(m.score) > 250;
+```
+
+---
+
+### **9. Pass/Fail Label: Create a report showing the Student Name, Subject, Score, and a status column that says "Pass" if the score is 70 or above, and "Fail" if below.**
+
+```sql
+SELECT CONCAT(s.first_name, ' ', s.last_name) AS Student_Name,
+       sub.subject_name,
+       m.score,
+       CASE
+           WHEN m.score >= 70 THEN 'Pass'
+           ELSE 'Fail'
+       END AS Status
+FROM Students s
+JOIN Marks m
+ON s.student_id = m.student_id
+JOIN Subjects sub
+ON m.subject_id = sub.subject_id;
+```
