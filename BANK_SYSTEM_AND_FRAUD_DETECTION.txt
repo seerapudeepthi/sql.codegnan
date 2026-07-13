@@ -1,0 +1,656 @@
+# 1. Create Database
+
+```sql
+CREATE DATABASE BankingSystem;
+
+USE BankingSystem;
+```
+
+---
+
+# 2. Customer Table
+
+```sql
+CREATE TABLE Customers(
+CustomerID INT PRIMARY KEY AUTO_INCREMENT,
+CustomerName VARCHAR(100),
+Phone VARCHAR(15),
+Email VARCHAR(100),
+Address VARCHAR(100)
+);
+```
+
+---
+
+# 3. Accounts Table
+
+```sql
+CREATE TABLE Accounts(
+AccountID INT PRIMARY KEY AUTO_INCREMENT,
+CustomerID INT,
+AccountType VARCHAR(30),
+Balance DECIMAL(12,2),
+Status VARCHAR(20),
+FOREIGN KEY(CustomerID)
+REFERENCES Customers(CustomerID)
+);
+```
+
+---
+
+# 4. Cards Table
+
+```sql
+CREATE TABLE Cards(
+CardID INT PRIMARY KEY AUTO_INCREMENT,
+AccountID INT,
+CardNumber VARCHAR(20),
+CardType VARCHAR(20),
+ExpiryDate DATE,
+FOREIGN KEY(AccountID)
+REFERENCES Accounts(AccountID)
+);
+```
+
+---
+
+# 5. Transactions Table
+
+```sql
+CREATE TABLE Transactions(
+TransactionID INT PRIMARY KEY AUTO_INCREMENT,
+AccountID INT,
+TransactionType VARCHAR(20),
+Amount DECIMAL(10,2),
+TransactionDate DATETIME,
+FOREIGN KEY(AccountID)
+REFERENCES Accounts(AccountID)
+);
+```
+
+---
+
+# Insert Sample Customers
+
+```sql
+INSERT INTO Customers(CustomerName,Phone,Email,Address)
+VALUES
+
+('Rahul','9876543210','rahul@gmail.com','Hyderabad'),
+
+('Priya','9876543211','priya@gmail.com','Chennai'),
+
+('Kiran','9876543212','kiran@gmail.com','Vizag'),
+
+('Sneha','9876543213','sneha@gmail.com','Bangalore'),
+
+('Arjun','9876543214','arjun@gmail.com','Delhi');
+```
+
+---
+
+# Insert Accounts
+
+```sql
+INSERT INTO Accounts(CustomerID,AccountType,Balance,Status)
+VALUES
+
+(1,'Savings',90000,'Active'),
+
+(2,'Savings',50000,'Active'),
+
+(3,'Current',70000,'Active'),
+
+(4,'Savings',100000,'Active'),
+
+(5,'Current',40000,'Inactive');
+```
+
+---
+
+# Insert Cards
+
+```sql
+INSERT INTO Cards(AccountID,CardNumber,CardType,ExpiryDate)
+VALUES
+
+(1,'1111222233334444','Debit','2028-12-31'),
+
+(2,'5555666677778888','Credit','2027-11-30'),
+
+(3,'9999000011112222','Debit','2029-06-30'),
+
+(4,'3333444455556666','Credit','2026-08-31'),
+
+(5,'7777888899990000','Debit','2027-09-30');
+```
+
+---
+
+# Insert Transactions
+
+```sql
+INSERT INTO Transactions(AccountID,TransactionType,Amount,TransactionDate)
+VALUES
+
+(1,'Deposit',5000,'2025-07-10 09:00:00'),
+
+(1,'Withdraw',2000,'2025-07-10 09:10:00'),
+
+(1,'Withdraw',60000,'2025-07-10 09:15:00'),
+
+(1,'Withdraw',55000,'2025-07-10 09:20:00'),
+
+(2,'Deposit',10000,'2025-07-11 10:00:00'),
+
+(2,'Withdraw',5000,'2025-07-11 11:00:00'),
+
+(3,'Deposit',15000,'2025-07-11 09:30:00'),
+
+(4,'Deposit',20000,'2025-07-12 08:00:00'),
+
+(4,'Withdraw',10000,'2025-07-12 10:00:00'),
+
+(5,'Deposit',5000,'2025-07-13 09:00:00');
+```
+
+---
+
+# EASY QUERIES
+
+### 1
+
+```sql
+SELECT * FROM Customers;
+```
+
+### 2
+
+```sql
+SELECT * FROM Accounts;
+```
+
+### 3
+
+```sql
+SELECT * FROM Transactions;
+```
+
+### 4
+
+```sql
+SELECT CustomerName
+FROM Customers;
+```
+
+### 5
+
+```sql
+SELECT Balance
+FROM Accounts
+WHERE Balance>50000;
+```
+
+### 6
+
+```sql
+SELECT *
+FROM Accounts
+WHERE Status='Active';
+```
+
+### 7
+
+```sql
+SELECT *
+FROM Transactions
+WHERE Amount>10000;
+```
+
+### 8
+
+```sql
+SELECT COUNT(*)
+FROM Customers;
+```
+
+### 9
+
+```sql
+SELECT MAX(Balance)
+FROM Accounts;
+```
+
+### 10
+
+```sql
+SELECT MIN(Balance)
+FROM Accounts;
+```
+
+### 11
+
+```sql
+SELECT AVG(Balance)
+FROM Accounts;
+```
+
+### 12
+
+```sql
+SELECT SUM(Balance)
+FROM Accounts;
+```
+
+### 13
+
+```sql
+SELECT *
+FROM Cards;
+```
+
+### 14
+
+```sql
+SELECT *
+FROM Customers
+ORDER BY CustomerName;
+```
+
+### 15
+
+```sql
+SELECT *
+FROM Transactions
+ORDER BY TransactionDate DESC;
+```
+
+---
+
+# MEDIUM QUERIES
+
+### 1 Join
+
+```sql
+SELECT CustomerName,AccountType,Balance
+FROM Customers
+JOIN Accounts
+ON Customers.CustomerID=Accounts.CustomerID;
+```
+
+---
+
+### 2
+
+```sql
+SELECT CustomerName,CardType
+FROM Customers
+JOIN Accounts
+ON Customers.CustomerID=Accounts.CustomerID
+JOIN Cards
+ON Accounts.AccountID=Cards.AccountID;
+```
+
+---
+
+### 3
+
+```sql
+SELECT CustomerName,
+SUM(Balance)
+FROM Customers
+JOIN Accounts
+ON Customers.CustomerID=Accounts.CustomerID
+GROUP BY CustomerName;
+```
+
+---
+
+### 4
+
+```sql
+SELECT AccountID,
+COUNT(*)
+FROM Transactions
+GROUP BY AccountID;
+```
+
+---
+
+### 5
+
+```sql
+SELECT CustomerName,Balance
+FROM Customers
+JOIN Accounts
+ON Customers.CustomerID=Accounts.CustomerID
+WHERE Balance=(SELECT MAX(Balance) FROM Accounts);
+```
+
+---
+
+### 6
+
+```sql
+SELECT *
+FROM Transactions
+WHERE TransactionType='Deposit';
+```
+
+---
+
+### 7
+
+```sql
+SELECT *
+FROM Transactions
+WHERE MONTH(TransactionDate)=7;
+```
+
+---
+
+### 8
+
+```sql
+SELECT AccountType,
+AVG(Balance)
+FROM Accounts
+GROUP BY AccountType;
+```
+
+---
+
+### 9
+
+```sql
+SELECT CustomerName
+FROM Customers
+WHERE CustomerID
+IN
+(SELECT CustomerID
+FROM Accounts
+WHERE Balance>80000);
+```
+
+---
+
+### 10
+
+```sql
+SELECT CustomerName
+FROM Customers
+WHERE CustomerID NOT IN
+(SELECT CustomerID FROM Accounts WHERE Status='Inactive');
+```
+
+---
+
+# INTERMEDIATE QUERIES
+
+### Running Balance
+
+```sql
+SELECT
+
+AccountID,
+
+Amount,
+
+SUM(Amount)
+
+OVER(PARTITION BY AccountID ORDER BY TransactionDate)
+
+AS RunningBalance
+
+FROM Transactions;
+```
+
+---
+
+### Fraud Detection
+
+```sql
+SELECT *
+
+FROM Transactions
+
+WHERE Amount>50000;
+```
+
+---
+
+### Rank Customers
+
+```sql
+SELECT
+
+CustomerID,
+
+Balance,
+
+RANK()
+
+OVER(ORDER BY Balance DESC)
+
+FROM Accounts;
+```
+
+---
+
+### Dense Rank
+
+```sql
+SELECT
+
+CustomerID,
+
+Balance,
+
+DENSE_RANK()
+
+OVER(ORDER BY Balance DESC)
+
+FROM Accounts;
+```
+
+---
+
+### LAG()
+
+```sql
+SELECT
+
+TransactionID,
+
+Amount,
+
+LAG(Amount)
+
+OVER(ORDER BY TransactionDate)
+
+FROM Transactions;
+```
+
+---
+
+### LEAD()
+
+```sql
+SELECT
+
+TransactionID,
+
+Amount,
+
+LEAD(Amount)
+
+OVER(ORDER BY TransactionDate)
+
+FROM Transactions;
+```
+
+---
+
+### Row Number
+
+```sql
+SELECT
+
+ROW_NUMBER()
+
+OVER(ORDER BY Balance DESC)
+
+FROM Accounts;
+```
+
+---
+
+### Monthly Statement
+
+```sql
+SELECT *
+
+FROM Transactions
+
+WHERE MONTH(TransactionDate)=7;
+```
+
+---
+
+### Duplicate Phone Numbers
+
+```sql
+SELECT
+
+Phone,
+
+COUNT(*)
+
+FROM Customers
+
+GROUP BY Phone
+
+HAVING COUNT(*)>1;
+```
+
+---
+
+# Trigger
+
+```sql
+DELIMITER $$
+
+CREATE TRIGGER UpdateBalance
+
+AFTER INSERT
+
+ON Transactions
+
+FOR EACH ROW
+
+BEGIN
+
+IF NEW.TransactionType='Deposit'
+
+THEN
+
+UPDATE Accounts
+
+SET Balance=Balance+NEW.Amount
+
+WHERE AccountID=NEW.AccountID;
+
+ELSE
+
+UPDATE Accounts
+
+SET Balance=Balance-NEW.Amount
+
+WHERE AccountID=NEW.AccountID;
+
+END IF;
+
+END$$
+
+DELIMITER ;
+```
+
+---
+
+# Stored Procedure
+
+```sql
+DELIMITER $$
+
+CREATE PROCEDURE MonthlyStatement(IN acc INT)
+
+BEGIN
+
+SELECT *
+
+FROM Transactions
+
+WHERE AccountID=acc;
+
+END$$
+
+DELIMITER ;
+```
+
+Call it:
+
+```sql
+CALL MonthlyStatement(1);
+```
+
+---
+
+# Transaction (ACID)
+
+```sql
+START TRANSACTION;
+
+UPDATE Accounts
+SET Balance=Balance-5000
+WHERE AccountID=1;
+
+UPDATE Accounts
+SET Balance=Balance+5000
+WHERE AccountID=2;
+
+COMMIT;
+```
+
+---
+
+# Rollback Example
+
+```sql
+START TRANSACTION;
+
+UPDATE Accounts
+SET Balance=Balance-1000000
+WHERE AccountID=1;
+
+ROLLBACK;
+```
+
+---
+
+## This project demonstrates the following MySQL concepts:
+
+* DDL (`CREATE DATABASE`, `CREATE TABLE`)
+* DML (`INSERT`, `UPDATE`, `DELETE`)
+* Constraints (`PRIMARY KEY`, `FOREIGN KEY`)
+* Joins
+* Aggregate Functions
+* `GROUP BY`, `HAVING`
+* Subqueries
+* Window Functions (`RANK`, `DENSE_RANK`, `ROW_NUMBER`, `LAG`, `LEAD`, `SUM OVER`)
+* Triggers
+* Stored Procedures
+* Transactions (`START TRANSACTION`, `COMMIT`, `ROLLBACK`)
+* Basic fraud detection logic
+* Running balance calculation
+
+This is an interview-level intermediate MySQL project and is suitable for practicing most core database concepts.
